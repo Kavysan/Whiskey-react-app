@@ -1,15 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import Background from '../assets/images/whiskey.jpg';
+import { useState, useEffect } from 'react';
 
-// const Home = ({ children }: { children: React.ReactNode }) => {
 function Home() {
-  const location = useLocation();
-  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
@@ -19,25 +14,21 @@ function Home() {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [location]);
+  }, []);
 
   const getFontSize = () => {
-    if (windowWidth <= 1180) {
-      return '100px';
-    } else if (windowWidth <= 640) {
-      return '50px';
-    }
-    return '12rem';
+    return windowWidth <= 844 ? '50px' : '100px';
   };
 
   const h1Styles: React.CSSProperties = {
     backgroundImage: `url(${Background})`,
-    backgroundSize: 'cover',
+    backgroundSize: windowWidth > 100 ? 'cover' : 'contain', 
     backgroundRepeat: 'no-repeat',
     fontSize: getFontSize(),
     fontWeight: 900,
     margin: 0,
     textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9)',
+    overflow: 'hidden'
   };
 
   return (
@@ -48,7 +39,6 @@ function Home() {
       <div className="text-center mb-20">
         <h1 className="text-white">WHISKEY COLLECTION</h1>
       </div>
-      {/* {children} */}
     </div>
   );
 };
