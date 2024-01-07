@@ -1,81 +1,100 @@
-import { Disclosure } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { signInWithPopup, signOut } from 'firebase/auth'
+import { auth, provider } from '../config/firebase'
 
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', current: false },
-  { name: 'About', href: '/about', current: false },
-  { name: 'Home', href: '/', current: false },
-  { name: 'Sign In', href: '/', current: false },
-  { name: 'Sign Out', href: '/', current: false },
-]
+function Navbar() {
+    const [isVisible, setIsVisible] = useState(false)
+  
+    const signOutOnClick = () => {
+      signOut(auth)
+      location.reload();
+    }
+  
+    const signInOnClick = async () => {
+      const response = await signInWithPopup(auth, provider);
+      if ( response.user ) {
+          location.reload();
+      }
+    }
+  
+    const dropDown = () => {
+      setIsVisible(!isVisible)
+    }
+  
+    const clicked = () => {
+      setIsVisible(false)
+    }
 
-function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(' ')
-  }
 
-export default function Navbar() {
-  return (
-    <Disclosure as="nav" className="bg-richblack fixed top-0 w-full z-50 ">
-      {({ open }) => (
-        <>
-          <div className=" max-w-7xl mx-autopx-2 sm:px-6 lg:px-8">
-            <div className="relative flex h-16 items-center">
-              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                {/* Mobile menu button*/}
-                <Disclosure.Button className=" relative inline-flex items-center rounded-md p-2 text-gray-400 hover:bg-hover hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                  <span className="absolute -inset-0.5" />
-                  <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Disclosure.Button>
-              </div>
-              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex flex-shrink-0 text-gray-300 items-center font-bold"> WHISKEY COLLECTION
-                </div>
-                <div className="hidden sm:ml-6 sm:block">
-                  <div className="flex space-x-4">
-                    {navigation.map((item) => (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        className={classNames(
-                          item.current ? ' text-white' : 'text-gray-300 hover:bg-hover hover:text-white',
-                          'rounded-md px-3 py-2 text-sm font-medium'
-                        )}
-                        aria-current={item.current ? 'page' : undefined}
-                      >
-                        {item.name}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
+    return (
+        <nav className='flex items-center justify-between flex-wrap bg-richblack p-6'>
+            <div className='flex items-center flex-shrink-0 hover:text-brownsugar  text-white mr-6'>
+                <Link to='/' className='font-semibold text-xl tracking-tight '>MY CAR COLLECTION</Link>
             </div>
-          </div>
-
-          <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2">
-              {navigation.map((item) => (
-                <Disclosure.Button
-                  key={item.name}
-                  as="a"
-                  href={item.href}
-                  className={classNames(
-                    item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-hover hover:text-white',
-                    'block rounded-md px-3 py-2 text-base font-medium'
-                  )}
-                  aria-current={item.current ? 'page' : undefined}
-                >
-                  {item.name}
-                </Disclosure.Button>
-              ))}
+            <div className='block'>
+                <button onClick={dropDown} className='flex items-center px-3 py-2 text-white border rounded border-white hover:text-brownsugar hover:border-brownsugar'>
+                    <i className='fas fa-bars'></i>
+                </button>
             </div>
-          </Disclosure.Panel>
-        </>
-      )}
-    </Disclosure>
-  )
+            { isVisible ? (
+            <div className='w-full block flex-grow items-center'>
+                <div className="text-sm lg:flex-grow">
+                    <button className='p-3 m-5  justify-center'>
+                        <div>
+                            <Link to='/' onClick={ clicked} className='flex place-itmes-center mt-4 lg:inline-block lg:mt-0
+                             text-white hover:text-brownsugar mr-4'>
+                                Home
+                            </Link>
+                        </div>
+
+                    </button>
+                    <button className='p-3 m-5 justify-center'>
+                        <div>
+                            <Link to='/about' onClick={ clicked} className='flex place-itmes-center mt-4 lg:inline-block lg:mt-0
+                             text-white hover:text-brownsugar mr-4'>
+                                About
+                            </Link>
+                        </div>
+
+                    </button>
+                    <button className='p-3 m-5  justify-center'>
+                        <div>
+                            <Link to='/dashboard' onClick={ clicked} className='flex place-itmes-center mt-4 lg:inline-block lg:mt-0
+                             text-white hover:text-brownsugar mr-4'>
+                                Dashboard
+                            </Link>
+                        </div>
+
+                    </button>
+                    {
+                        !auth.currentUser ?
+
+                        <button className='p-3 m-5  justify-center'>
+                            <div>
+                                <Link to="/" onClick={ () => { signInOnClick()}} className="flex place-items-center mt-4
+                                 lg:inline-block lg:mt-0 text-white hover:text-brownsugar">
+                                    Login
+                                </Link>
+                            </div>
+                        </button>
+                        :
+                        <button className='p-3 m-5 justify-center'>
+                            <div>
+                                <Link to="/" onClick={ () => { signOutOnClick()}} className="flex place-items-center mt-4
+                                 lg:inline-block lg:mt-0 text-white hover:text-brownsugar">
+                                    Sign Out
+                                </Link>
+                            </div>
+                        </button>
+                    }
+                </div>
+            </div>
+            ) : (
+            <></>
+            ) }
+        </nav>
+    )  
 }
+
+export default Navbar

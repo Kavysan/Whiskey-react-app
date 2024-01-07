@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Background from '../assets/images/whiskey.jpg';
 
-const Home = ({ children }: { children: React.ReactNode }) => {
+// const Home = ({ children }: { children: React.ReactNode }) => {
+function Home() {
   const location = useLocation();
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
 
@@ -20,33 +21,34 @@ const Home = ({ children }: { children: React.ReactNode }) => {
     };
   }, [location]);
 
+  const getFontSize = () => {
+    if (windowWidth <= 1180) {
+      return '100px';
+    } else if (windowWidth <= 640) {
+      return '50px';
+    }
+    return '12rem';
+  };
+
   const h1Styles: React.CSSProperties = {
     backgroundImage: `url(${Background})`,
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
-    fontSize: '12rem',
+    fontSize: getFontSize(),
     fontWeight: 900,
     margin: 0,
     textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9)',
   };
-
-  if (windowWidth <= 1180) { 
-    h1Styles.fontSize = '100px'; 
-  }
-  
-  if (windowWidth <= 640) { 
-    h1Styles.fontSize = '50px'; 
-  }
 
   return (
     <div
       className="bg-brownsugar min-h-screen flex flex-col items-center justify-center"
       style={h1Styles}
     >
-      <div className="text-center mb-4">
+      <div className="text-center mb-20">
         <h1 className="text-white">WHISKEY COLLECTION</h1>
       </div>
-      {children}
+      {/* {children} */}
     </div>
   );
 };

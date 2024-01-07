@@ -1,4 +1,4 @@
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyCNRDWqxTcPR2MIHL_i_Uq6TmFaczuPdko",
     authDomain: "whiskey-react-app.firebaseapp.com",
     projectId: "whiskey-react-app",
